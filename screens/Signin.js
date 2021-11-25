@@ -16,10 +16,10 @@ import { useNavigation } from "@react-navigation/native";
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
-const Signin = () => {
+const Signin = ({ setToken }) => {
 	const navigation = useNavigation();
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [email, setEmail] = useState("nono@airbnb-api.com");
+	const [password, setPassword] = useState("pass");
 	const [hidePassword, setHidePassword] = useState(true);
 	const [fillAll, setFillAll] = useState();
 	const [wrong, setWrong] = useState(false);
@@ -31,16 +31,13 @@ const Signin = () => {
 			} else {
 				setLoading(true);
 				setFillAll(true);
-				const response = await axios.post(
-					"https://express-airbnb-api.herokuapp.com/user/log_in",
-					{
-						email: email,
-						password: password,
-					}
-				);
+				const response = await axios.post("https://express-airbnb-api.herokuapp.com/user/log_in", {
+					email: email,
+					password: password,
+				});
 
 				if (response.status === 200) {
-					alert("Connected");
+					setToken(response.data.token);
 					setLoading(false);
 					setWrong(false);
 				}
@@ -69,6 +66,7 @@ const Signin = () => {
 						setEmail(text);
 					}}
 					keyboardType="email-address"
+					value={email}
 				/>
 				<Password
 					setHidePassword={setHidePassword}
@@ -109,9 +107,7 @@ const Signin = () => {
 								navigation.navigate("Signup");
 							}}
 						>
-							<Text style={{ color: "#666", textAlign: "center" }}>
-								No account ? Register now
-							</Text>
+							<Text style={{ color: "#666", textAlign: "center" }}>No account ? Register now</Text>
 						</TouchableOpacity>
 					</>
 				)}
